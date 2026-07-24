@@ -41,6 +41,26 @@ Provider Agent ┘                              │
 | `live` | `VERIFIER_MODE=live` + 0G keys | Real TEE inference |
 | Hedera live | `HEDERA_*` vars set | Real HCS + payout on testnet |
 
+## Live testnet setup
+
+After adding credentials to `apps/web/.env`:
+
+```bash
+cd apps/web && npx tsx scripts/setup-live.ts   # creates HCS topic, tests 0G + Hedera
+pnpm dev
+```
+
+## Resource addresses (testnet)
+
+| Item | Value |
+|------|-------|
+| Hedera account | `0.0.9695296` |
+| HCS topic | `0.0.9728084` |
+| EVM address | `0xf931ead57eab855aa11788176d912e4353519743` |
+| 0G | Router API @ `https://router-api.0g.ai/v1` |
+
+See [Learnings.md](./Learnings.md) for full integration notes.
+
 ## Scripts
 
 ```bash

@@ -34,10 +34,32 @@ async function parseHederaPrivateKey(raw: string) {
   const { PrivateKey } = await import("@hashgraph/sdk");
   const key = raw.startsWith("0x") ? raw.slice(2) : raw;
   try {
-    return PrivateKey.fromStringED25519(key);
-  } catch {
     return PrivateKey.fromStringECDSA(key);
+  } catch {
+    return PrivateKey.fromStringED25519(key);
   }
+}
+
+export async function createHcsTopic(config: HederaConfig): Promise<string> {
+  const { Client, TopicCreateTransaction } = await import("@hashgraph/sdk");
+
+  const client = config.network === "mainnet"
+    ? Client.forMainnet()
+    : config.network === "previewnet"
+      ? Client.forPreviewnet()
+      : Client.forTestnet();
+
+  client.setOperator(
+    config.accountId,
+    await parseHederaPrivateKey(config.privateKey)
+  );
+
+  const tx = await new TopicCreateTransaction()
+    .setTopicMemo("Verdikt audit trail")
+    .execute(client);
+
+  const receipt = await tx.getReceipt(client);
+  return receipt.topicId!.toString();
 }
 
 export async function publishAuditMessage(

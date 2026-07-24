@@ -90,6 +90,31 @@
 3. Set `RPC_URL` to Ethereum mainnet RPC
 4. Register agent with ENS name in UI → resolve live at `/api/ens/resolve?name=yourname.eth`
 
+## Live integration verified (24 July)
+
+| Integration | Status | Details |
+|-------------|--------|---------|
+| Hedera HCS topic | ✓ | `0.0.9728084` (created via setup script) |
+| Hedera HCS publish | ✓ | Real tx e.g. `0.0.9695296@1784909697.797438485` |
+| 0G Router inference | ✓ | Model `qwen3-vl-30b` via `router-api.0g.ai/v1` |
+| E2E live mode | ✓ | Verdict 80/100 PASS + real HCS anchor |
+
+Setup command: `cd apps/web && npx tsx scripts/setup-live.ts`
+
+### Contract / resource addresses (submission)
+
+| Item | Value |
+|------|-------|
+| Hedera testnet account | `0.0.9695296` |
+| Hedera HCS topic | `0.0.9728084` |
+| EVM address | `0xf931ead57eab855aa11788176d912e4353519743` |
+| GitHub | https://github.com/lexisphoenix/Verdikt |
+| 0G feature | Router API — OpenAI-compatible TEE inference |
+
+## Security note
+
+Private keys were shared in chat for setup. **Rotate Hedera testnet key and regenerate 0G API key after hackathon** if this conversation is stored anywhere public.
+
 ## Test results (24 July, automated)
 
 | Suite | Result |
