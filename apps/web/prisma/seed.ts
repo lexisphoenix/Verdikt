@@ -37,10 +37,12 @@ async function main() {
       walletAddress: "0x3333333333333333333333333333333333333333",
       displayName: "Verdikt Verifier",
       role: "verifier",
-      ensName: "verifier.verdikt.eth",
-      endpointUrl: "http://localhost:3000/api/verify",
+      ensName: "stora.locker",
+      endpointUrl: process.env.NEXT_PUBLIC_APP_URL
+        ? `${process.env.NEXT_PUBLIC_APP_URL}/api/verify`
+        : "http://localhost:3000/api/verify",
       agentContext:
-        "TEE-backed verification engine for agent deliverables. Judges task specs against weighted rubrics.",
+        "Verdikt verification service — TEE-backed judge for agent deliverables (stora.locker)",
     },
   });
 

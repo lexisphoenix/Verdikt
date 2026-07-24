@@ -18,7 +18,8 @@ export function Shell({ children }: { children: ReactNode }) {
             </div>
           </a>
           <nav className="hidden items-center gap-6 text-sm text-zinc-300 md:flex">
-            <a href="/dashboard" className="hover:text-white">Dashboard</a>
+            <a href="/identity" className="hover:text-white">Identity</a>
+          <a href="/dashboard" className="hover:text-white">Dashboard</a>
             <a href="/agents" className="hover:text-white">Agents</a>
             <a href="/jobs/new" className="hover:text-white">New Job</a>
           </nav>

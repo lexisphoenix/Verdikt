@@ -9,3 +9,5 @@ dist/
 coverage/
 .turbo/
 data/results.csv
+.vercel
+.env*
