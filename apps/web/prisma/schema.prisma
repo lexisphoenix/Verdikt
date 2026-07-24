@@ -1,0 +1,62 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model Agent {
+  id              String   @id @default(cuid())
+  ensName         String?  @unique
+  walletAddress   String   @unique
+  displayName     String
+  role            String
+  endpointUrl     String?
+  agentContext    String?
+  reputationScore Float?
+  createdAt       DateTime @default(now())
+  jobsAsClient    VerificationJob[] @relation("ClientJobs")
+  jobsAsProvider  VerificationJob[] @relation("ProviderJobs")
+}
+
+model VerificationJob {
+  id                  String   @id @default(cuid())
+  clientAgentId       String
+  providerAgentId     String
+  title               String
+  taskSpec            String
+  rubricJson          String
+  deliverableUrl      String?
+  deliverableText     String?
+  status              String   @default("draft")
+  hcsTopicId          String?
+  hcsTransactionId    String?
+  hcsSequenceNumber   Int?
+  taskSpecHash        String?
+  deliverableHash     String?
+  verdictHash         String?
+  payoutTransactionId String?
+  payoutAmountHbar    Float?
+  payoutStatus        String?
+  createdAt           DateTime @default(now())
+  updatedAt           DateTime @updatedAt
+  clientAgent         Agent    @relation("ClientJobs", fields: [clientAgentId], references: [id])
+  providerAgent       Agent    @relation("ProviderJobs", fields: [providerAgentId], references: [id])
+  verdict             Verdict?
+}
+
+model Verdict {
+  id                   String   @id @default(cuid())
+  verificationJobId    String   @unique
+  pass                 Boolean
+  score                Int
+  recommendedPayoutBps Int
+  summary              String
+  confidence           Float
+  rawJson              String
+  verifierSignature    String?
+  createdAt            DateTime @default(now())
+  verificationJob      VerificationJob @relation(fields: [verificationJobId], references: [id])
+}
