@@ -1,0 +1,20 @@
+{
+  "name": "@verdikt/verifier",
+  "version": "0.1.0",
+  "private": true,
+  "main": "./src/index.ts",
+  "types": "./src/index.ts",
+  "scripts": {
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "@verdikt/shared": "workspace:*",
+    "openai": "^4.85.4",
+    "zod": "^3.24.2"
+  },
+  "devDependencies": {
+    "typescript": "^5.9.3",
+    "vitest": "^3.0.5"
+  }
+}

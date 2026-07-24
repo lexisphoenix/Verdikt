@@ -1,0 +1,20 @@
+{
+  "name": "@verdikt/chain",
+  "version": "0.1.0",
+  "private": true,
+  "main": "./src/index.ts",
+  "types": "./src/index.ts",
+  "scripts": {
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "@hashgraph/sdk": "^2.62.0",
+    "@verdikt/shared": "workspace:*",
+    "viem": "^2.23.5"
+  },
+  "devDependencies": {
+    "typescript": "^5.9.3",
+    "vitest": "^3.0.5"
+  }
+}
