@@ -1,4 +1,5 @@
 import { Shell, Card, Badge, Button, HashBlock } from "@/components/ui";
+import { prisma } from "@/lib/db";
 import { getEnv } from "@/lib/env";
 import { resolveEnsFull } from "@verdikt/chain";
 
@@ -17,6 +18,18 @@ export default async function IdentityPage({
   const appUrl = env.NEXT_PUBLIC_APP_URL ?? "http://localhost:3000";
   const { profile, resolved, source } = await resolveEnsFull(name, env.RPC_URL, appUrl);
 
+  const linkedAgent = await prisma.agent.findFirst({
+    where: { ensName: name },
+  });
+
+  const displayAddress =
+    resolved && profile.address
+      ? profile.address
+      : linkedAgent?.walletAddress ?? profile.address;
+
+  const linkedInApp = Boolean(linkedAgent);
+  const linkedInLocker = linkedInApp && !resolved;
+
   return (
     <Shell>
       <div className="mx-auto max-w-3xl px-6 py-10">
@@ -26,13 +39,17 @@ export default async function IdentityPage({
           Agent identity resolution for Verdikt verifier
         </p>
 
-        <Card className="mt-8" glow={resolved}>
+        <Card className="mt-8" glow={resolved || linkedInLocker}>
           <div className="flex items-start justify-between gap-4">
             <div>
               <div className="text-sm text-zinc-500">Resolution</div>
-              <div className="mt-1 flex items-center gap-2">
-                <Badge tone={resolved ? "success" : "warning"}>
-                  {resolved ? "On-chain address found" : "Metadata only"}
+              <div className="mt-1 flex flex-wrap items-center gap-2">
+                <Badge tone={resolved ? "success" : linkedInLocker ? "info" : "warning"}>
+                  {resolved
+                    ? "On-chain address found"
+                    : linkedInLocker
+                      ? "Linked in my.locker + Verdikt"
+                      : "Metadata only"}
                 </Badge>
                 <span className="text-xs text-zinc-500">via {source}</span>
               </div>
@@ -47,15 +64,28 @@ export default async function IdentityPage({
             )}
           </div>
 
+          {linkedInLocker && (
+            <p className="mt-4 text-sm text-zinc-400">
+              Tu address está en my.locker y registrada en Verdikt. Los indexadores ENS
+              (.locker) pueden tardar 30–60 min en reflejarla on-chain — válido para demo.
+            </p>
+          )}
+
           <div className="mt-6 grid gap-3">
-            <HashBlock label="Wallet address" value={profile.address ?? "Not set — link ETH in my.locker"} />
-            <HashBlock label="agent-context" value={profile.agentContext} />
+            <HashBlock
+              label="Wallet address"
+              value={displayAddress ?? "Not set — link ETH in my.locker"}
+            />
+            <HashBlock
+              label="agent-context"
+              value={linkedAgent?.agentContext ?? profile.agentContext}
+            />
             <HashBlock label="agent-endpoint[https]" value={profile.endpointHttps} />
             <HashBlock label="url" value={profile.url} />
           </div>
         </Card>
 
-        {!resolved && name.endsWith(".locker") && (
+        {!resolved && name.endsWith(".locker") && !linkedInLocker && (
           <Card className="mt-6 border-amber-500/20 bg-amber-500/5">
             <h2 className="font-semibold text-amber-200">Cómo activar stora.locker</h2>
             <ol className="mt-3 list-decimal space-y-2 pl-5 text-sm text-zinc-300">
@@ -68,13 +98,12 @@ export default async function IdentityPage({
               </li>
               <li>Abre <strong>stora.locker</strong> → pestaña <strong>Addresses</strong></li>
               <li>
-                Añade tu wallet Ethereum:{" "}
-                <code className="text-emerald-300">0xf931ead57eab855aa11788176d912e4353519743</code>
+                Conecta <strong>MetaMask</strong> y guarda tu Ethereum address
               </li>
               <li>
-                (Opcional) Añade text record <code>url</code> con tu URL de Verdikt en producción
+                (Opcional) Text record <code>url</code> →{" "}
+                <code className="text-emerald-300">https://verdikt-kohl.vercel.app</code>
               </li>
-              <li>Recarga esta página — debe aparecer la address on-chain</li>
             </ol>
           </Card>
         )}
@@ -84,6 +113,7 @@ export default async function IdentityPage({
             JSON API
           </Button>
           <Button href="/agents">Ver agents</Button>
+          <Button href="/jobs/new">Run verification</Button>
         </div>
       </div>
     </Shell>

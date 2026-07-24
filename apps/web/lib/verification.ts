@@ -1,7 +1,8 @@
 import {
   canonicalHash,
   hashText,
-  isHederaConfigured,
+  isHederaHcsConfigured,
+  isHederaOperatorConfigured,
   mockHcsPublish,
   mockPayout,
   publishAuditMessage,
@@ -127,7 +128,7 @@ export async function triggerPayout(jobId: string, recipientAccountId: string) {
   let payoutStatus: string;
 
   if (
-    isHederaConfigured({
+    isHederaOperatorConfigured({
       accountId: env.HEDERA_ACCOUNT_ID,
       privateKey: env.HEDERA_PRIVATE_KEY,
       network: env.HEDERA_NETWORK,

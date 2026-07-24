@@ -34,7 +34,7 @@ async function main() {
 
   const verifier = await prisma.agent.create({
     data: {
-      walletAddress: "0x3333333333333333333333333333333333333333",
+      walletAddress: "0x131190A66a5c9E35D038F346F6a331c59108aE10",
       displayName: "Verdikt Verifier",
       role: "verifier",
       ensName: "stora.locker",

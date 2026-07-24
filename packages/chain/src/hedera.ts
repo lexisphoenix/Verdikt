@@ -21,13 +21,18 @@ export interface PayoutResult {
   status: string;
 }
 
+export function isHederaOperatorConfigured(config: Partial<HederaConfig>): boolean {
+  return Boolean(config.accountId && config.privateKey && config.network);
+}
+
+/** Requires topic ID — for HCS publish only. */
+export function isHederaHcsConfigured(config: Partial<HederaConfig>): boolean {
+  return isHederaOperatorConfigured(config) && Boolean(config.topicId);
+}
+
+/** @deprecated use isHederaHcsConfigured or isHederaOperatorConfigured */
 export function isHederaConfigured(config: Partial<HederaConfig>): boolean {
-  return Boolean(
-    config.accountId &&
-      config.privateKey &&
-      config.network &&
-      config.topicId
-  );
+  return isHederaHcsConfigured(config);
 }
 
 async function parseHederaPrivateKey(raw: string) {
