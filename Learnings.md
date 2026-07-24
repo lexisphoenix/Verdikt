@@ -90,7 +90,18 @@
 3. Set `RPC_URL` to Ethereum mainnet RPC
 4. Register agent with ENS name in UI → resolve live at `/api/ens/resolve?name=yourname.eth`
 
-## What works without user keys
+## Test results (24 July, automated)
+
+| Suite | Result |
+|-------|--------|
+| `@verdikt/shared` vitest | 3/3 passed |
+| `@verdikt/verifier` vitest | 2/2 passed |
+| `@verdikt/chain` vitest | 4/4 passed |
+| Next.js build | ✓ success |
+| E2E smoke (`scripts/e2e-smoke.ts`) | ✓ health → verify → verdict → ENS |
+| DAS pytest (`hackathon_winner`) | 12/12 passed |
+
+Dev server: `http://localhost:3000` (running during E2E)
 
 - ✅ Full UI (landing, dashboard, agents, create job, job detail)
 - ✅ Mock verification with structured verdict + per-criterion checks
