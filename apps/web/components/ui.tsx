@@ -1,4 +1,5 @@
 import clsx from "clsx";
+import Link from "next/link";
 import type { ReactNode } from "react";
 import { LogoWordmark } from "./logo";
 import { MobileNav } from "./mobile-nav";
@@ -18,21 +19,21 @@ export function Shell({ children }: { children: ReactNode }) {
 
       <header className="relative z-20 border-b border-white/10 bg-black/20 backdrop-blur-xl">
         <div className="relative mx-auto flex max-w-7xl items-center justify-between px-6 py-4">
-          <a href="/" className="hover:opacity-90">
+          <Link href="/" className="hover:opacity-90">
             <LogoWordmark />
-          </a>
+          </Link>
           <nav className="hidden items-center gap-6 text-sm text-zinc-300 md:flex">
             {NAV.map((item) => (
               <a key={item.href} href={item.href} className="hover:text-white">
                 {item.label}
               </a>
             ))}
-            <a
+            <Link
               href="/jobs/new"
               className="rounded-lg bg-white/10 px-3 py-1.5 font-medium text-white hover:bg-white/15"
             >
               Run demo
-            </a>
+            </Link>
           </nav>
           <MobileNav />
         </div>

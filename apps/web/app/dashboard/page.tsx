@@ -78,9 +78,11 @@ export default async function DashboardPage() {
                           tone={
                             job.status === "completed"
                               ? "success"
-                              : job.status === "failed"
-                                ? "danger"
-                                : "info"
+                              : job.status === "pending_review"
+                                ? "warning"
+                                : job.status === "failed"
+                                  ? "danger"
+                                  : "info"
                           }
                         >
                           {job.status}

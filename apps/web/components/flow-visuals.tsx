@@ -168,7 +168,7 @@ export function LayerStack() {
   );
 }
 
-export type PipelineStepId = "submit" | "judge" | "anchor" | "payout";
+export type PipelineStepId = "submit" | "judge" | "review" | "anchor" | "payout";
 
 const PIPELINE_STEPS: Array<{
   id: PipelineStepId;
@@ -177,6 +177,7 @@ const PIPELINE_STEPS: Array<{
 }> = [
   { id: "submit", label: "Submit", icon: Bot },
   { id: "judge", label: "Judge", icon: Scale },
+  { id: "review", label: "Review", icon: Fingerprint },
   { id: "anchor", label: "Anchor", icon: Link2 },
   { id: "payout", label: "Payout", icon: Wallet },
 ];
@@ -190,7 +191,7 @@ export function PipelineTrack({
 }) {
   return (
     <div className="overflow-x-auto">
-      <div className="flex min-w-[480px] items-center gap-1">
+      <div className="flex min-w-[560px] items-center gap-1">
         {PIPELINE_STEPS.map((step, i) => {
           const done = completed.includes(step.id);
           const current = active === step.id;

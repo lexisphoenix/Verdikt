@@ -13,11 +13,22 @@ Built for ETHGlobal (July 2026).
 
 1. Register agents (client, provider, verifier) — wallet + optional ENS name
 2. `POST /api/verify` with task spec, rubric, deliverable
-3. 0G returns a structured verdict (score, pass/fail, per-criterion notes)
-4. Hashes go to Hedera Consensus Service
-5. Optional HBAR payout scaled to the score
+3. **0G** returns a structured AI verdict (score, pass/fail, per-criterion notes)
+4. **Borderline or low-confidence scores** pause for **human review** before anchoring
+5. **Final verdict** hashes publish to **Hedera Consensus Service** (HCS)
+6. Optional **testnet HBAR payout** after a finalized pass (demo operator account)
 
 The verifier agent is linked to **stora.locker** (see `/identity`).
+
+### Verification pipeline
+
+```
+Submit → AI judge (0G) → Human review? → Final verdict → HCS anchor → Optional payout
+                              ↓
+                    borderline score or confidence < 75%
+```
+
+Human review actions: **approve** AI verdict, **override** pass/score, or **reject**. HCS only records the **final** verdict.
 
 ## Run locally
 
@@ -73,7 +84,8 @@ Creates an HCS topic if missing and smoke-tests 0G + Hedera.
 | GET/POST | `/api/agents/register` | List / create agents |
 | POST | `/api/verify` | Create job, run verification |
 | GET | `/api/jobs/:id` | Job + verdict + audit refs |
-| PUT | `/api/jobs/:id/verify` | Trigger HBAR payout |
+| POST | `/api/jobs/:id/review` | Human approve / override / reject (when `pending_review`) |
+| PUT | `/api/jobs/:id/verify` | Trigger HBAR payout (after HCS finalized) |
 | GET | `/api/ens/resolve?name=` | Resolve ENS / .locker profile |
 
 Example body for `/api/verify`:
@@ -118,6 +130,29 @@ pnpm db:seed       # demo agents
 ## Demo
 
 See [docs/demo.md](docs/demo.md) for a short walkthrough script.
+
+## Hedera integration
+
+Verdikt uses the official **`@hashgraph/sdk`** on **Hedera testnet** for audit and demo settlement.
+
+| Service | Usage | Code |
+|---------|--------|------|
+| **HCS** (Consensus Service) | Publish final verdict audit JSON after AI + optional human review | [`packages/chain/src/hedera.ts`](packages/chain/src/hedera.ts) — `publishAuditMessage()` |
+| **Crypto transfer** | Optional score-based HBAR payout (demo operator → provider account) | [`packages/chain/src/hedera.ts`](packages/chain/src/hedera.ts) — `sendHbarPayout()` |
+| **Pipeline orchestration** | When to publish HCS; human review gate | [`apps/web/lib/verification.ts`](apps/web/lib/verification.ts) |
+| **Review thresholds** | Borderline score / low confidence detection | [`packages/shared/src/review.ts`](packages/shared/src/review.ts) |
+
+### Live testnet artifacts
+
+| Resource | Link |
+|----------|------|
+| HCS topic `0.0.9728084` | https://hashscan.io/testnet/topic/0.0.9728084 |
+| Operator account `0.0.9695296` | https://hashscan.io/testnet/account/0.0.9695296 |
+| Health (Hedera live flag) | https://verdikt-kohl.vercel.app/api/health |
+
+Each completed job stores an HCS transaction ID on the job detail page with a **View on HashScan** link.
+
+**Payout note:** The demo sends testnet HBAR from the Verdikt **operator account**, not client escrow. Production would deposit upfront and release on pass; Verdikt’s core value is the **verifiable verdict + HCS proof**.
 
 ## Integrations
 

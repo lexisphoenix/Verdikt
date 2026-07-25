@@ -32,7 +32,9 @@ export default function AgentsPage() {
   }
 
   useEffect(() => {
-    load();
+    void fetch("/api/agents/register")
+      .then((r) => r.json())
+      .then((data) => setAgents(data.agents ?? []));
   }, []);
 
   async function submit(e: React.FormEvent) {

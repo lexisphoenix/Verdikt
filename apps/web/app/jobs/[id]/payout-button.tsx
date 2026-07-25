@@ -28,7 +28,9 @@ export function PayoutButton({ jobId }: { jobId: string }) {
   return (
     <div className="space-y-3">
       <p className="text-sm text-zinc-400">
-        Trigger testnet HBAR payout to provider Hedera account (e.g. 0.0.12345)
+        Demo settlement from the Verdikt operator account to the provider&apos;s
+        Hedera account ID (e.g. <code className="text-emerald-300">0.0.9695296</code>).
+        Amount is score-based, capped at 1 testnet HBAR.
       </p>
       <div className="flex gap-2">
         <input

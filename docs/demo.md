@@ -22,7 +22,10 @@ Open `/identity` — verifier is `stora.locker`. Show my.locker with the Ethereu
 `/jobs/new` — the VPN copy example is pre-filled. Hit Submit & verify. Wait for the verdict (~8s with 0G live).
 
 **Verdict (45s)**  
-Job detail page: score, PASS/FAIL, the three criterion breakdowns. Mention this comes from 0G, not a hardcoded rule check.
+Job detail: score, PASS/FAIL, criterion breakdown. Mention 0G live judge. If status is `pending_review`, show human review panel (borderline / low confidence) — approve then HCS publishes.
+
+**Human review (20s, if triggered)**  
+Explain: AI first pass, human confirms before HashScan. Approve → final verdict anchored.
 
 **Audit (30s)**  
 Audit panel: three hashes + HCS transaction. Open HashScan — SUBMIT MESSAGE on topic `0.0.9728084`.

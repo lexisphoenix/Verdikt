@@ -9,8 +9,16 @@ import { hederaExplorerUrl } from "@verdikt/chain";
 import { ExternalLink } from "lucide-react";
 import { notFound } from "next/navigation";
 import { PayoutButton } from "./payout-button";
+import { ReviewPanel } from "./review-panel";
 
 export const dynamic = "force-dynamic";
+
+function statusTone(status: string): "success" | "warning" | "danger" | "info" {
+  if (status === "completed") return "success";
+  if (status === "pending_review") return "warning";
+  if (status === "failed") return "danger";
+  return "info";
+}
 
 export default async function JobDetailPage({
   params,
@@ -39,6 +47,15 @@ export default async function JobDetailPage({
 
   const completed: PipelineStepId[] = ["submit"];
   if (job.verdict) completed.push("judge");
+  if (
+    job.status === "completed" &&
+    (job.reviewStatus === "approved" ||
+      job.reviewStatus === "overridden" ||
+      job.reviewStatus === "rejected" ||
+      job.reviewStatus === "auto")
+  ) {
+    completed.push("review");
+  }
   if (job.hcsTransactionId && !job.hcsTransactionId.startsWith("@mock")) {
     completed.push("anchor");
   }
@@ -47,16 +64,25 @@ export default async function JobDetailPage({
   const active: PipelineStepId | undefined =
     job.status === "submitted" || job.status === "running"
       ? "judge"
-      : job.verdict?.pass && !job.payoutTransactionId
-        ? "payout"
-        : undefined;
+      : job.status === "pending_review"
+        ? "review"
+        : job.status === "completed" && job.verdict?.pass && !job.payoutTransactionId
+          ? "payout"
+          : undefined;
+
+  const showAiBadge = job.verdict && job.status === "pending_review";
 
   return (
     <Shell>
       <div className="mx-auto max-w-5xl px-6 py-10">
         <div className="flex flex-wrap items-start justify-between gap-4">
           <div>
-            <Badge tone={job.status === "completed" ? "success" : "info"}>{job.status}</Badge>
+            <Badge tone={statusTone(job.status)}>{job.status.replace("_", " ")}</Badge>
+            {job.verdict && job.verdict.reviewSource !== "ai" && job.status === "completed" && (
+              <span className="ml-2 inline-block">
+                <Badge tone="info">{job.verdict.reviewSource.replace("_", " ")}</Badge>
+              </span>
+            )}
             <h1 className="mt-3 text-3xl font-bold">{job.title}</h1>
             <p className="mt-1 text-zinc-400">
               {job.clientAgent.displayName} → {job.providerAgent.displayName}
@@ -72,6 +98,18 @@ export default async function JobDetailPage({
           <PipelineTrack active={active} completed={completed} />
         </Card>
 
+        {job.status === "pending_review" && job.verdict && (
+          <div className="mt-6">
+            <ReviewPanel
+              jobId={job.id}
+              aiScore={job.verdict.aiScore ?? job.verdict.score}
+              aiPass={job.verdict.aiPass ?? job.verdict.pass}
+              aiConfidence={job.verdict.aiConfidence ?? job.verdict.confidence}
+              reviewReason={job.reviewNotes}
+            />
+          </div>
+        )}
+
         {job.verdict && (
           <Card
             className={`mt-8 ${
@@ -79,7 +117,7 @@ export default async function JobDetailPage({
                 ? "border-emerald-500/30 bg-gradient-to-br from-emerald-500/10 to-transparent"
                 : "border-rose-500/20 bg-gradient-to-br from-rose-500/5 to-transparent"
             }`}
-            glow
+            glow={job.status === "completed"}
           >
             <div className="flex flex-wrap items-center justify-between gap-6">
               <div className="flex items-center gap-6">
@@ -91,6 +129,11 @@ export default async function JobDetailPage({
                   {job.verdict.score}
                 </div>
                 <div>
+                  {showAiBadge && (
+                    <div className="mb-2">
+                      <Badge tone="warning">Provisional AI verdict</Badge>
+                    </div>
+                  )}
                   <Badge tone={job.verdict.pass ? "success" : "danger"}>
                     {job.verdict.pass ? "PASS" : "FAIL"}
                   </Badge>
@@ -98,6 +141,9 @@ export default async function JobDetailPage({
                   <p className="mt-1 text-xs text-zinc-500">
                     Payout {job.verdict.recommendedPayoutBps / 100}% · Confidence{" "}
                     {Math.round(job.verdict.confidence * 100)}%
+                    {job.verdict.aiScore != null && job.verdict.aiScore !== job.verdict.score && (
+                      <> · AI was {job.verdict.aiScore}/100</>
+                    )}
                   </p>
                 </div>
               </div>
@@ -149,6 +195,11 @@ export default async function JobDetailPage({
 
           <Card>
             <h2 className="mb-4 font-semibold">Audit trail</h2>
+            {job.status === "pending_review" && (
+              <p className="mb-4 text-sm text-amber-200/80">
+                HCS anchor runs after human review — final verdict only.
+              </p>
+            )}
             <AuditFlowVisual
               hasVerdict={Boolean(job.verdictHash)}
               hasHcs={Boolean(job.hcsTransactionId && !job.hcsTransactionId.startsWith("@mock"))}
@@ -166,7 +217,7 @@ export default async function JobDetailPage({
           </Card>
         </div>
 
-        {job.verdict?.pass && (
+        {job.status === "completed" && job.verdict?.pass && (
           <Card className="mt-6">
             <h2 className="mb-2 font-semibold">Payout</h2>
             {job.payoutTransactionId ? (
