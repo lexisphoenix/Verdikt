@@ -10,3 +10,6 @@ allowBuilds:
   protobufjs: set this to true or false
   sharp: true
   unrs-resolver: set this to true or false
+minimumReleaseAgeExclude:
+  - playwright-core@1.62.0
+  - playwright@1.62.0

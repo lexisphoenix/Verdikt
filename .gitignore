@@ -12,3 +12,4 @@ data/results.csv
 .vercel
 .env*
 .agents/
+demo-recordings/
