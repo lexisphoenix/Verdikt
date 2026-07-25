@@ -10,6 +10,9 @@ import { ExternalLink } from "lucide-react";
 import { notFound } from "next/navigation";
 import { PayoutButton } from "./payout-button";
 import { ReviewPanel } from "./review-panel";
+import { VerdictPayoutVisual } from "@/components/verdict-payout-visual";
+import { CriterionRadarChart } from "@/components/criterion-radar-chart";
+import type { Rubric } from "@verdikt/shared";
 
 export const dynamic = "force-dynamic";
 
@@ -38,6 +41,8 @@ export default async function JobDetailPage({
         checks: Array<{ key: string; label: string; passed: boolean; score: number; rationale: string }>;
       })
     : null;
+
+  const rubric = JSON.parse(job.rubricJson) as Rubric;
 
   const explorerUrl = job.hcsTransactionId?.startsWith("@mock")
     ? null
@@ -138,13 +143,6 @@ export default async function JobDetailPage({
                     {job.verdict.pass ? "PASS" : "FAIL"}
                   </Badge>
                   <p className="mt-2 max-w-md text-sm text-zinc-300">{job.verdict.summary}</p>
-                  <p className="mt-1 text-xs text-zinc-500">
-                    Payout {job.verdict.recommendedPayoutBps / 100}% · Confidence{" "}
-                    {Math.round(job.verdict.confidence * 100)}%
-                    {job.verdict.aiScore != null && job.verdict.aiScore !== job.verdict.score && (
-                      <> · AI was {job.verdict.aiScore}/100</>
-                    )}
-                  </p>
                 </div>
               </div>
               {explorerUrl && (
@@ -160,8 +158,32 @@ export default async function JobDetailPage({
               )}
             </div>
 
-            {verdictRaw?.checks && (
-              <div className="mt-8 grid gap-3 sm:grid-cols-3">
+            <VerdictPayoutVisual
+              score={job.verdict.score}
+              pass={job.verdict.pass}
+              confidence={job.verdict.confidence}
+              recommendedPayoutBps={job.verdict.recommendedPayoutBps}
+              clientName={job.clientAgent.displayName}
+              providerName={job.providerAgent.displayName}
+              provisional={job.status === "pending_review"}
+              paid={Boolean(job.payoutTransactionId)}
+              paidAmountHbar={job.payoutAmountHbar}
+            />
+
+            {verdictRaw?.checks && verdictRaw.checks.length >= 2 && (
+              <div className="mt-8 border-t border-white/10 pt-8">
+                <p className="mb-4 text-xs font-medium uppercase tracking-wider text-zinc-500">
+                  Rubric breakdown
+                </p>
+                <CriterionRadarChart
+                  checks={verdictRaw.checks}
+                  minimumScore={rubric.minimumScore}
+                />
+              </div>
+            )}
+
+            {verdictRaw?.checks && verdictRaw.checks.length === 1 && (
+              <div className="mt-8 grid gap-3">
                 {verdictRaw.checks.map((check) => (
                   <div
                     key={check.key}
@@ -227,7 +249,10 @@ export default async function JobDetailPage({
                 <div className="mt-1">{job.payoutAmountHbar} HBAR on Hedera testnet</div>
               </div>
             ) : (
-              <PayoutButton jobId={job.id} />
+              <PayoutButton
+                jobId={job.id}
+                recommendedPayoutBps={job.verdict.recommendedPayoutBps}
+              />
             )}
           </Card>
         )}

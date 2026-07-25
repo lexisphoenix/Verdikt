@@ -1,11 +1,25 @@
 "use client";
 
 import { useState } from "react";
+import {
+  DEMO_JOB_BUDGET_HBAR,
+  payoutAmountFromBps,
+  payoutPercentFromBps,
+} from "@/lib/demo-payout";
 
-export function PayoutButton({ jobId }: { jobId: string }) {
+export function PayoutButton({
+  jobId,
+  recommendedPayoutBps,
+}: {
+  jobId: string;
+  recommendedPayoutBps: number;
+}) {
   const [accountId, setAccountId] = useState("");
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState<string | null>(null);
+
+  const payoutHbar = payoutAmountFromBps(recommendedPayoutBps);
+  const payoutPct = payoutPercentFromBps(recommendedPayoutBps);
 
   async function trigger() {
     if (!accountId.trim()) return;
@@ -27,11 +41,14 @@ export function PayoutButton({ jobId }: { jobId: string }) {
 
   return (
     <div className="space-y-3">
-      <p className="text-sm text-zinc-400">
-        Demo settlement from the Verdikt operator account to the provider&apos;s
-        Hedera account ID (e.g. <code className="text-emerald-300">0.0.9695296</code>).
-        Amount is score-based, capped at 1 testnet HBAR.
-      </p>
+      <div className="rounded-lg border border-emerald-500/20 bg-emerald-500/5 px-4 py-3">
+        <p className="text-sm font-medium text-emerald-200">
+          Release {payoutHbar.toFixed(2)} HBAR ({payoutPct}% of {DEMO_JOB_BUDGET_HBAR} HBAR budget)
+        </p>
+        <p className="mt-1 text-xs text-zinc-500">
+          Score-based payment to the provider&apos;s Hedera account (testnet demo).
+        </p>
+      </div>
       <div className="flex gap-2">
         <input
           className="flex-1 rounded-xl border border-white/10 bg-black/30 px-3 py-2 text-sm"

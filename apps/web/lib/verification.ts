@@ -11,6 +11,7 @@ import type { AuditMessage, Rubric, Verdict } from "@verdikt/shared";
 import { humanReviewReason, needsHumanReview } from "@verdikt/shared";
 import { verifyDeliverable } from "@verdikt/verifier";
 import { prisma } from "./db";
+import { payoutAmountFromBps } from "./demo-payout";
 import { getEnv, isLiveHedera } from "./env";
 
 export type ReviewAction = "approve" | "override" | "reject";
@@ -250,7 +251,7 @@ export async function triggerPayout(jobId: string, recipientAccountId: string) {
   if (!job.verdict.pass) throw new Error("Cannot payout failed verification");
 
   const payoutBps = job.verdict.recommendedPayoutBps;
-  const amountHbar = (payoutBps / 10000) * 1.0; // demo: max 1 HBAR
+  const amountHbar = payoutAmountFromBps(payoutBps);
 
   const env = getEnv();
   let payoutTransactionId: string;
