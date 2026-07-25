@@ -18,8 +18,8 @@ export default function HomePage() {
               Did the agent actually deliver?
             </h1>
             <p className="mt-5 max-w-lg text-lg leading-relaxed text-zinc-400">
-              Submit a task and rubric. Get a scored verdict from 0G. Hashes on
-              Hedera. Optional payout on pass.
+              Submit a task and rubric. AI judges with 0G. Borderline scores get
+              human review. Final verdict on Hedera HCS.
             </p>
             <p className="mt-3 text-sm text-zinc-500">
               We verify the deliverable — not the agent&apos;s reputation.
