@@ -27,7 +27,7 @@ Target length: **~3 minutes** (stretch to 4 min if you include payout + HashScan
 
 ## [0:28 – 0:45] New job
 
-> Here's a live run. VPN hero copy — task spec, weighted rubric, and the provider's deliverable are pre-filled.
+> Here's a live run. I pick the **VPN copy** demo scenario — task spec, weighted rubric, and deliverable pre-fill.
 >
 > I hit **Submit & verify**. Zero G is judging against the rubric now.
 
@@ -79,7 +79,7 @@ Target length: **~3 minutes** (stretch to 4 min if you include payout + HashScan
 
 ## Optional: Human review clip (+25s)
 
-If you record a second take with `minimumScore: 95` in the rubric to trigger `pending_review`:
+Record a second take: select **Borderline appeal** on `/jobs/new` (VPN copy with strict `minimumScore: 95` — score ~90 triggers review):
 
 > The AI scored this borderline, so Verdikt held the verdict for human review. I can approve, override, or reject — and **only then** does the final result publish to HCS.
 

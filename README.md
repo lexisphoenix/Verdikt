@@ -30,6 +30,10 @@ Submit → AI judge (0G) → Human review? → Final verdict → HCS anchor → 
 
 Human review actions: **approve** AI verdict, **override** pass/score, or **reject**. HCS only records the **final** verdict.
 
+### MVP scope
+
+Verdikt judges the **deliverable artifact** against the **task spec + rubric** you send in `POST /api/verify`. It does not fetch repos, diffs, or project files — put any project context in `taskSpec`. In production, the provider agent POSTs its output; the demo form simulates that handoff with pre-filled examples (see `/jobs/new` demo scenarios).
+
 ## Run locally
 
 ```bash
