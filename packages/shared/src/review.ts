@@ -10,9 +10,27 @@ export function needsHumanReview(
   verdict: Pick<Verdict, "score" | "confidence" | "pass">,
   rubric: Pick<Rubric, "minimumScore">
 ): boolean {
+  const distance = Math.abs(verdict.score - rubric.minimumScore);
+
+  // Clear fail — well below minimum; no human gate needed
+  if (
+    !verdict.pass &&
+    verdict.score <= rubric.minimumScore - REVIEW_BORDERLINE_POINTS
+  ) {
+    return false;
+  }
+
+  // Clear pass — well above minimum with sufficient confidence
+  if (
+    verdict.pass &&
+    verdict.score >= rubric.minimumScore + REVIEW_BORDERLINE_POINTS &&
+    verdict.confidence >= REVIEW_CONFIDENCE_THRESHOLD
+  ) {
+    return false;
+  }
+
   if (verdict.confidence < REVIEW_CONFIDENCE_THRESHOLD) return true;
 
-  const distance = Math.abs(verdict.score - rubric.minimumScore);
   if (distance <= REVIEW_BORDERLINE_POINTS) return true;
 
   return false;

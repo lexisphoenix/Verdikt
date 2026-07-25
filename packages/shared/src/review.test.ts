@@ -28,9 +28,9 @@ describe("needsHumanReview", () => {
     ).toBe(false);
   });
 
-  it("auto-completes clear fail", () => {
+  it("auto-completes clear fail even with low confidence", () => {
     expect(
-      needsHumanReview({ score: 55, confidence: 0.85, pass: false }, rubric)
+      needsHumanReview({ score: 40, confidence: 0.4, pass: false }, rubric)
     ).toBe(false);
   });
 });
