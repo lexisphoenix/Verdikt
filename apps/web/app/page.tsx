@@ -1,9 +1,9 @@
 import { Shell, Card, Button, Badge, SponsorPills } from "@/components/ui";
 import {
-  ArchitectureDiagram,
-  HorizontalFlow,
-  LayerStack,
-} from "@/components/flow-visuals";
+  AnimatedArchitectureDiagram,
+  AnimatedHorizontalFlow,
+  AnimatedLayerStack,
+} from "@/components/flow-animated";
 import { ArrowRight } from "lucide-react";
 
 export default function HomePage() {
@@ -39,7 +39,10 @@ export default function HomePage() {
             <div className="absolute -bottom-8 -left-8 h-32 w-32 rounded-full bg-emerald-500/10 blur-3xl" />
             <div className="relative">
               <Badge tone="info">How it flows</Badge>
-              <ArchitectureDiagram />
+              <p className="mt-2 mb-4 text-xs text-zinc-500">
+                Watch the verification path light up step by step
+              </p>
+              <AnimatedArchitectureDiagram />
             </div>
           </Card>
         </div>
@@ -49,11 +52,11 @@ export default function HomePage() {
           <div className="mb-6 text-center">
             <h2 className="text-2xl font-semibold">End-to-end pipeline</h2>
             <p className="mt-2 text-sm text-zinc-500">
-              Five actors, one verification loop
+              Data moves left to right — loops automatically
             </p>
           </div>
           <Card className="overflow-hidden">
-            <HorizontalFlow />
+            <AnimatedHorizontalFlow />
           </Card>
         </div>
 
@@ -65,7 +68,7 @@ export default function HomePage() {
               Each sponsor maps to a distinct layer in the stack
             </p>
           </div>
-          <LayerStack />
+          <AnimatedLayerStack />
         </div>
 
         {/* CTA */}

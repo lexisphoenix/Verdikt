@@ -26,9 +26,10 @@ input, textarea, select {
   color-scheme: dark;
 }
 
+/* ── Pulse & float ── */
 @keyframes pulse-glow {
-  0%, 100% { opacity: 0.5; }
-  50% { opacity: 1; }
+  0%, 100% { opacity: 0.55; box-shadow: 0 0 0 rgba(99, 102, 241, 0); }
+  50% { opacity: 1; box-shadow: 0 0 20px rgba(99, 102, 241, 0.15); }
 }
 
 .animate-pulse-glow {
@@ -41,14 +42,118 @@ input, textarea, select {
 }
 
 .animate-float {
-  animation: float 4s ease-in-out infinite;
+  animation: float 3s ease-in-out infinite;
 }
 
-@keyframes flow-dash {
-  to { stroke-dashoffset: -20; }
+/* ── Stagger entrance ── */
+@keyframes stagger-in {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
 }
 
-.flow-line {
-  stroke-dasharray: 4 4;
-  animation: flow-dash 1s linear infinite;
+.animate-stagger-in {
+  animation: stagger-in 0.45s ease-out forwards;
+  opacity: 0;
+}
+
+/* ── Flow dots traveling along connectors ── */
+@keyframes flow-dot-vertical {
+  0% { top: 0%; height: 12%; opacity: 0; }
+  8% { opacity: 1; }
+  92% { opacity: 1; }
+  100% { top: 88%; height: 12%; opacity: 0; }
+}
+
+.flow-dot-vertical {
+  animation: flow-dot-vertical 7s ease-in-out infinite;
+}
+
+@keyframes flow-dot-horizontal {
+  0% { left: -8%; opacity: 0; }
+  10% { opacity: 1; }
+  90% { opacity: 1; }
+  100% { left: 100%; opacity: 0; }
+}
+
+.flow-dot-horizontal {
+  animation: flow-dot-horizontal 0.9s ease-in-out infinite;
+}
+
+/* ── Arrow nudge between nodes ── */
+@keyframes arrow-nudge {
+  0%, 100% { transform: translateY(-50%) translateX(0); opacity: 0.4; }
+  50% { transform: translateY(-50%) translateX(3px); opacity: 1; }
+}
+
+.animate-arrow-nudge {
+  animation: arrow-nudge 1s ease-in-out infinite;
+}
+
+/* ── Bouncing down arrow (input → output) ── */
+@keyframes bounce-down {
+  0%, 100% { transform: translateY(0); opacity: 0.4; }
+  50% { transform: translateY(6px); opacity: 1; }
+}
+
+.animate-bounce-down {
+  animation: bounce-down 1.5s ease-in-out infinite;
+}
+
+/* ── Sequential input highlight ── */
+@keyframes input-glow {
+  0%, 100% { border-color: rgba(99, 102, 241, 0.2); background: rgba(99, 102, 241, 0.05); }
+  50% { border-color: rgba(99, 102, 241, 0.5); background: rgba(99, 102, 241, 0.12); }
+}
+
+.animate-input-glow {
+  animation: input-glow 2.4s ease-in-out infinite;
+}
+
+@keyframes output-glow {
+  0%, 30% { border-color: rgba(52, 211, 153, 0.2); background: rgba(52, 211, 153, 0.05); }
+  50%, 100% { border-color: rgba(52, 211, 153, 0.45); background: rgba(52, 211, 153, 0.12); }
+}
+
+.animate-output-glow {
+  animation: output-glow 2.4s ease-in-out infinite;
+}
+
+/* ── Pipeline connector fill ── */
+@keyframes connector-fill {
+  from { transform: scaleX(0); }
+  to { transform: scaleX(1); }
+}
+
+.animate-connector-fill {
+  transform-origin: left;
+  animation: connector-fill 0.6s ease-out forwards;
+}
+
+/* ── Audit block reveal ── */
+@keyframes audit-pop {
+  0% { transform: scale(0.95); opacity: 0.6; }
+  50% { transform: scale(1.02); }
+  100% { transform: scale(1); opacity: 1; }
+}
+
+.animate-audit-pop {
+  animation: audit-pop 0.4s ease-out;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-pulse-glow,
+  .animate-float,
+  .animate-stagger-in,
+  .flow-dot-vertical,
+  .flow-dot-horizontal,
+  .animate-arrow-nudge,
+  .animate-bounce-down,
+  .animate-input-glow,
+  .animate-output-glow,
+  .animate-connector-fill,
+  .animate-audit-pop {
+    animation: none !important;
+    opacity: 1 !important;
+    transform: none !important;
+  }
 }

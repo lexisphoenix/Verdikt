@@ -105,7 +105,12 @@ export function HorizontalFlow() {
               <div className="text-xs text-zinc-500">{node.sub}</div>
             </div>
             {i < nodes.length - 1 && (
-              <div className="hidden shrink-0 text-zinc-600 sm:block">→</div>
+              <div className="relative mx-1 hidden h-px w-5 shrink-0 overflow-hidden bg-white/10 sm:block sm:w-8">
+                <div className="flow-dot-horizontal absolute inset-y-0 w-1.5 rounded-full bg-indigo-400/80" />
+                <span className="absolute -right-1 top-1/2 -translate-y-1/2 animate-arrow-nudge text-[10px] text-zinc-600">
+                  ›
+                </span>
+              </div>
             )}
           </div>
         ))}
@@ -214,14 +219,16 @@ export function PipelineTrack({
                   {step.label}
                 </span>
               </div>
-              {i < PIPELINE_STEPS.length - 1 && (
-                <div
-                  className={clsx(
-                    "mx-1 h-px w-4 shrink-0 sm:w-6",
-                    done ? "bg-emerald-500/50" : "bg-white/10"
-                  )}
-                />
-              )}
+            {i < PIPELINE_STEPS.length - 1 && (
+              <div className="relative mx-1 h-px w-4 shrink-0 overflow-hidden bg-white/10 sm:w-6">
+                {done && (
+                  <div className="absolute inset-0 origin-left animate-connector-fill bg-emerald-500/60" />
+                )}
+                {current && !done && (
+                  <div className="flow-dot-horizontal absolute inset-y-0 w-1.5 rounded-full bg-indigo-400" />
+                )}
+              </div>
+            )}
             </div>
           );
         })}
@@ -243,10 +250,11 @@ export function InputFlowDiagram() {
         What goes in
       </div>
       <div className="grid gap-3 sm:grid-cols-3">
-        {inputs.map((input) => (
+        {inputs.map((input, i) => (
           <div
             key={input.label}
-            className="rounded-xl border border-indigo-500/20 bg-indigo-500/5 p-3 text-center"
+            className="animate-input-glow rounded-xl border border-indigo-500/20 bg-indigo-500/5 p-3 text-center"
+            style={{ animationDelay: `${i * 0.4}s` }}
           >
             <div className="text-sm font-medium">{input.label}</div>
             <div className="mt-1 text-xs text-zinc-500">{input.desc}</div>
@@ -254,9 +262,9 @@ export function InputFlowDiagram() {
         ))}
       </div>
       <div className="my-4 flex justify-center">
-        <ArrowDown className="h-5 w-5 text-zinc-600" />
+        <ArrowDown className="h-5 w-5 animate-bounce-down text-indigo-400/70" />
       </div>
-      <div className="rounded-xl border border-emerald-500/20 bg-emerald-500/5 p-3 text-center">
+      <div className="animate-output-glow rounded-xl border border-emerald-500/20 bg-emerald-500/5 p-3 text-center">
         <div className="text-sm font-medium text-emerald-200">Structured verdict + Hedera proof</div>
         <div className="mt-1 text-xs text-zinc-500">Score, PASS/FAIL, criterion breakdown, HCS tx</div>
       </div>
@@ -287,16 +295,23 @@ export function AuditFlowVisual({
         <div key={block.label} className="flex items-center gap-2">
           <div
             className={clsx(
-              "rounded-lg border px-3 py-2 text-xs font-medium",
+              "rounded-lg border px-3 py-2 text-xs font-medium transition-all duration-500",
               block.active
-                ? "border-emerald-500/30 bg-emerald-500/10 text-emerald-200"
+                ? "animate-audit-pop border-emerald-500/30 bg-emerald-500/10 text-emerald-200"
                 : "border-white/10 bg-white/[0.02] text-zinc-600"
             )}
           >
             {block.label}
           </div>
           {i < blocks.length - 1 && (
-            <span className="text-zinc-700">→</span>
+            <span
+              className={clsx(
+                "transition-colors duration-500",
+                block.active ? "animate-arrow-nudge text-emerald-500/60" : "text-zinc-700"
+              )}
+            >
+              →
+            </span>
           )}
         </div>
       ))}
