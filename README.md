@@ -127,4 +127,4 @@ See [docs/demo.md](docs/demo.md) for a short walkthrough script.
 
 ## Team
 
-Alejandro Nieto
+Alexis Phoenix

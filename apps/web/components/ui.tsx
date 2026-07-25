@@ -45,7 +45,7 @@ export function Shell({ children }: { children: ReactNode }) {
           <div>
             <span className="text-zinc-400">Verdikt</span>
             <span className="mx-2">·</span>
-            <span>Alejandro Nieto</span>
+            <span>Alexis Phoenix</span>
           </div>
           <div className="flex flex-wrap items-center gap-4">
             <a href="https://verdikt-kohl.vercel.app" className="hover:text-zinc-300">
