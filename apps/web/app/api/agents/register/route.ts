@@ -1,11 +1,19 @@
 import { prisma } from "@/lib/db";
+import { ensureDemoAgents } from "@/lib/demo-agents";
 import { getEnv } from "@/lib/env";
 import { RegisterAgentSchema } from "@verdikt/shared";
 import { NextResponse } from "next/server";
 
 export async function GET() {
-  const agents = await prisma.agent.findMany({ orderBy: { createdAt: "desc" } });
-  return NextResponse.json({ agents });
+  try {
+    await ensureDemoAgents();
+    const agents = await prisma.agent.findMany({ orderBy: { createdAt: "desc" } });
+    return NextResponse.json({ agents });
+  } catch (error) {
+    const message = error instanceof Error ? error.message : "Unknown error";
+    console.error("GET /api/agents/register failed:", message);
+    return NextResponse.json({ error: message, agents: [] }, { status: 500 });
+  }
 }
 
 export async function POST(request: Request) {

@@ -10,6 +10,15 @@ Use the live site (https://verdikt-kohl.vercel.app) or localhost — full job fl
 - Hedera + 0G keys in env (production already has them on Vercel)
 - Browser zoom readable on recording
 
+## Demo scenarios (`/jobs/new`)
+
+| Scenario | Expected |
+|----------|----------|
+| **VPN copy** | Clear PASS → auto HCS → optional payout |
+| **Incident update** | Different rubric (completeness / accuracy / tone) |
+| **Borderline appeal** | `pending_review` → human approve / override / reject |
+| **Failed deliverable** | FAIL → no payout |
+
 ## Flow
 
 **Problem (15s)**  
