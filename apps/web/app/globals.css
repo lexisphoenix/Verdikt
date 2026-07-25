@@ -140,7 +140,24 @@ input, textarea, select {
   animation: audit-pop 0.4s ease-out;
 }
 
+@keyframes packet-travel {
+  0% { left: 0%; opacity: 0; }
+  12% { opacity: 1; }
+  88% { opacity: 1; }
+  100% { left: calc(100% - 8px); opacity: 0; }
+}
+
+.packet-dot {
+  animation: packet-travel 1.4s ease-in-out infinite;
+}
+
 @media (prefers-reduced-motion: reduce) {
+  .packet-dot {
+    animation: none !important;
+    left: 50% !important;
+    opacity: 1 !important;
+  }
+
   .animate-pulse-glow,
   .animate-float,
   .animate-stagger-in,

@@ -4,6 +4,7 @@ import {
   AnimatedHorizontalFlow,
   AnimatedLayerStack,
 } from "@/components/flow-animated";
+import { AgentHandoffInfographic } from "@/components/agent-handoff-infographic";
 import { ArrowRight } from "lucide-react";
 
 export default function HomePage() {
@@ -38,21 +39,33 @@ export default function HomePage() {
             <div className="absolute -right-8 -top-8 h-32 w-32 rounded-full bg-indigo-500/10 blur-3xl" />
             <div className="absolute -bottom-8 -left-8 h-32 w-32 rounded-full bg-emerald-500/10 blur-3xl" />
             <div className="relative">
-              <Badge tone="info">How it flows</Badge>
+              <Badge tone="info">The story</Badge>
               <p className="mt-2 mb-4 text-xs text-zinc-500">
-                Watch the verification path light up step by step
+                Agents hand off work — Verdikt verifies and proves it
               </p>
-              <AnimatedArchitectureDiagram />
+              <AgentHandoffInfographic />
             </div>
           </Card>
         </div>
 
-        {/* Horizontal pipeline */}
+        {/* Technical pipeline — detail for after the story */}
         <div className="mt-20">
+          <div className="mb-6 text-center">
+            <h2 className="text-2xl font-semibold">Under the hood</h2>
+            <p className="mt-2 text-sm text-zinc-500">
+              Step-by-step verification path — loops automatically
+            </p>
+          </div>
+          <Card className="overflow-hidden p-6">
+            <AnimatedArchitectureDiagram />
+          </Card>
+        </div>
+
+        <div className="mt-12">
           <div className="mb-6 text-center">
             <h2 className="text-2xl font-semibold">End-to-end pipeline</h2>
             <p className="mt-2 text-sm text-zinc-500">
-              Data moves left to right — loops automatically
+              Data moves left to right
             </p>
           </div>
           <Card className="overflow-hidden">
