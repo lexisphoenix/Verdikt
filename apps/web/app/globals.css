@@ -34,3 +34,21 @@ input, textarea, select {
 .animate-pulse-glow {
   animation: pulse-glow 2s ease-in-out infinite;
 }
+
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-4px); }
+}
+
+.animate-float {
+  animation: float 4s ease-in-out infinite;
+}
+
+@keyframes flow-dash {
+  to { stroke-dashoffset: -20; }
+}
+
+.flow-line {
+  stroke-dasharray: 4 4;
+  animation: flow-dash 1s linear infinite;
+}

@@ -1,5 +1,6 @@
 import { prisma } from "@/lib/db";
 import { Shell, Card, Stat, Badge, Button } from "@/components/ui";
+import { HorizontalFlow } from "@/components/flow-visuals";
 
 export const dynamic = "force-dynamic";
 
@@ -27,6 +28,13 @@ export default async function DashboardPage() {
           </div>
           <Button href="/jobs/new">New verification</Button>
         </div>
+
+        <Card className="mt-8 overflow-hidden">
+          <div className="mb-3 text-xs font-medium uppercase tracking-wider text-zinc-500">
+            Verification pipeline
+          </div>
+          <HorizontalFlow />
+        </Card>
 
         <div className="mt-8 grid gap-4 md:grid-cols-4">
           <Card><Stat label="Agents" value={agents} /></Card>

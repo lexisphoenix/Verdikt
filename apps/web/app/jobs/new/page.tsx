@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { Shell, Card, Button } from "@/components/ui";
+import { InputFlowDiagram, PipelineTrack } from "@/components/flow-visuals";
 import { Loader2 } from "lucide-react";
 import {
   DEFAULT_RUBRIC,
@@ -69,15 +70,32 @@ export default function NewJobPage() {
 
   return (
     <Shell>
-      <div className="mx-auto max-w-3xl px-6 py-10">
+      <div className="mx-auto max-w-5xl px-6 py-10">
         <h1 className="text-3xl font-bold">New verification</h1>
         <p className="mt-1 text-zinc-400">
           Task spec, rubric, and deliverable — demo example is pre-filled
         </p>
 
+        <div className="mt-8 grid gap-6 lg:grid-cols-2">
+          <InputFlowDiagram />
+          <Card>
+            <div className="mb-3 text-xs font-medium uppercase tracking-wider text-zinc-500">
+              You are here
+            </div>
+            <PipelineTrack active="submit" completed={[]} />
+            <p className="mt-4 text-sm text-zinc-400">
+              After submit, 0G judges the deliverable and Hedera stores the proof.
+            </p>
+          </Card>
+        </div>
+
         {loading && (
           <Card className="mt-6 border-indigo-500/20 bg-indigo-500/5">
-            <div className="flex items-center gap-3 text-sm text-indigo-200">
+            <div className="mb-4 text-xs font-medium uppercase tracking-wider text-zinc-500">
+              Pipeline progress
+            </div>
+            <PipelineTrack active="judge" completed={["submit"]} />
+            <div className="mt-4 flex items-center gap-3 text-sm text-indigo-200">
               <Loader2 className="h-5 w-5 animate-spin" />
               <div>
                 <div className="font-medium">Judging with 0G…</div>

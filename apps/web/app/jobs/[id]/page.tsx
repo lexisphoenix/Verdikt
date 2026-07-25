@@ -1,5 +1,10 @@
 import { prisma } from "@/lib/db";
 import { Shell, Card, Badge, HashBlock, Button } from "@/components/ui";
+import {
+  AuditFlowVisual,
+  PipelineTrack,
+  type PipelineStepId,
+} from "@/components/flow-visuals";
 import { hederaExplorerUrl } from "@verdikt/chain";
 import { ExternalLink } from "lucide-react";
 import { notFound } from "next/navigation";
@@ -32,6 +37,20 @@ export default async function JobDetailPage({
       ? hederaExplorerUrl(job.hcsTransactionId)
       : null;
 
+  const completed: PipelineStepId[] = ["submit"];
+  if (job.verdict) completed.push("judge");
+  if (job.hcsTransactionId && !job.hcsTransactionId.startsWith("@mock")) {
+    completed.push("anchor");
+  }
+  if (job.payoutTransactionId) completed.push("payout");
+
+  const active: PipelineStepId | undefined =
+    job.status === "submitted" || job.status === "running"
+      ? "judge"
+      : job.verdict?.pass && !job.payoutTransactionId
+        ? "payout"
+        : undefined;
+
   return (
     <Shell>
       <div className="mx-auto max-w-5xl px-6 py-10">
@@ -45,6 +64,13 @@ export default async function JobDetailPage({
           </div>
           <Button href="/dashboard" variant="secondary">Back</Button>
         </div>
+
+        <Card className="mt-6">
+          <div className="mb-3 text-xs font-medium uppercase tracking-wider text-zinc-500">
+            Pipeline progress
+          </div>
+          <PipelineTrack active={active} completed={completed} />
+        </Card>
 
         {job.verdict && (
           <Card
@@ -123,7 +149,12 @@ export default async function JobDetailPage({
 
           <Card>
             <h2 className="mb-4 font-semibold">Audit trail</h2>
-            <div className="grid gap-3">
+            <AuditFlowVisual
+              hasVerdict={Boolean(job.verdictHash)}
+              hasHcs={Boolean(job.hcsTransactionId && !job.hcsTransactionId.startsWith("@mock"))}
+              hasPayout={Boolean(job.payoutTransactionId)}
+            />
+            <div className="mt-5 grid gap-3">
               <HashBlock label="Task hash" value={job.taskSpecHash} />
               <HashBlock label="Deliverable hash" value={job.deliverableHash} />
               <HashBlock label="Verdict hash" value={job.verdictHash} />
