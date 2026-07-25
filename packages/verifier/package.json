@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "@verdikt/shared": "workspace:*",
+    "jsonrepair": "^3.15.0",
     "openai": "^4.85.4",
     "zod": "^3.24.2"
   },

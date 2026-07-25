@@ -1,6 +1,8 @@
 import { createHash } from "crypto";
 import type { Rubric, Verdict } from "@verdikt/shared";
 import { VerdictSchema } from "@verdikt/shared";
+import { normalizeVerdictPayload } from "./normalize-verdict";
+import { parseModelJson } from "./parse-model-json";
 import { buildJudgePrompt, normalizeDeliverable } from "./prompts";
 
 export type VerifierMode = "mock" | "live" | "openai";
@@ -155,11 +157,10 @@ export async function verifyDeliverable(
     raw = await runOpenAIVerifier(config, prompt);
   }
 
-  const parsed = JSON.parse(raw);
-  if (!parsed.evidenceHash) {
-    parsed.evidenceHash = hashContent(deliverable);
-  }
-  return VerdictSchema.parse(parsed);
+  const parsed = parseModelJson(raw) as Record<string, unknown>;
+  const evidenceHash = hashContent(deliverable);
+  const normalized = normalizeVerdictPayload(parsed, input.rubric, evidenceHash);
+  return VerdictSchema.parse(normalized);
 }
 
 export { hashContent };

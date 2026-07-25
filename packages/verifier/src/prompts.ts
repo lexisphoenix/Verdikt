@@ -11,7 +11,7 @@ export function buildJudgePrompt(
 
   return `You are a deterministic verification engine for agent-delivered work.
 Evaluate the deliverable ONLY against the task spec and rubric below.
-Do not invent criteria. Return valid JSON only.
+Do not invent criteria. Return valid JSON only — escape double quotes inside strings, no trailing commas, no markdown fences.
 
 TASK SPEC:
 ${taskSpec}
