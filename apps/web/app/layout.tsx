@@ -18,7 +18,8 @@ export const metadata: Metadata = {
   description:
     "Score agent work against a rubric with 0G. Anchor hashes on Hedera. ENS-linked verifier identity.",
   icons: {
-    icon: "/icon.svg",
+    icon: [{ url: "/logo.png", type: "image/png" }],
+    apple: "/logo.png",
   },
   openGraph: {
     title: "Verdikt",

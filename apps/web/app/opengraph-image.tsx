@@ -1,10 +1,15 @@
 import { ImageResponse } from "next/og";
+import { readFile } from "node:fs/promises";
+import { join } from "node:path";
 
-export const runtime = "edge";
+export const runtime = "nodejs";
 export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
 
-export default function OpenGraphImage() {
+export default async function OpenGraphImage() {
+  const logoData = await readFile(join(process.cwd(), "public/logo.png"));
+  const logoSrc = `data:image/png;base64,${logoData.toString("base64")}`;
+
   return new ImageResponse(
     (
       <div
@@ -28,26 +33,12 @@ export default function OpenGraphImage() {
             marginBottom: "32px",
           }}
         >
-          <div
-            style={{
-              width: 72,
-              height: 72,
-              borderRadius: 18,
-              background: "linear-gradient(135deg, #6366f1, #34d399)",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              fontSize: 36,
-              fontWeight: 700,
-              color: "#050508",
-            }}
-          >
-            V
-          </div>
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img src={logoSrc} width={80} height={80} alt="" />
           <span style={{ fontSize: 56, fontWeight: 700 }}>Verdikt</span>
         </div>
         <p style={{ fontSize: 36, color: "#a1a1aa", maxWidth: 900, lineHeight: 1.3 }}>
-          Verify agent deliverables. Verdict on 0G. Proof on Hedera.
+          Verify agent deliverables. Verdict on 0G. Human review when it matters. Proof on Hedera.
         </p>
         <div style={{ display: "flex", gap: 16, marginTop: 48 }}>
           {["0G", "Hedera", "ENS"].map((s) => (
