@@ -1,6 +1,7 @@
 import { prisma } from "@/lib/db";
 import { Shell, Card, Badge, HashBlock, Button } from "@/components/ui";
 import { hederaExplorerUrl } from "@verdikt/chain";
+import { ExternalLink } from "lucide-react";
 import { notFound } from "next/navigation";
 import { PayoutButton } from "./payout-button";
 
@@ -45,86 +46,103 @@ export default async function JobDetailPage({
           <Button href="/dashboard" variant="secondary">Back</Button>
         </div>
 
-        <div className="mt-8 grid gap-6 lg:grid-cols-2">
+        {job.verdict && (
+          <Card
+            className={`mt-8 ${
+              job.verdict.pass
+                ? "border-emerald-500/30 bg-gradient-to-br from-emerald-500/10 to-transparent"
+                : "border-rose-500/20 bg-gradient-to-br from-rose-500/5 to-transparent"
+            }`}
+            glow
+          >
+            <div className="flex flex-wrap items-center justify-between gap-6">
+              <div className="flex items-center gap-6">
+                <div
+                  className={`text-6xl font-bold tabular-nums ${
+                    job.verdict.pass ? "text-emerald-300" : "text-rose-300"
+                  }`}
+                >
+                  {job.verdict.score}
+                </div>
+                <div>
+                  <Badge tone={job.verdict.pass ? "success" : "danger"}>
+                    {job.verdict.pass ? "PASS" : "FAIL"}
+                  </Badge>
+                  <p className="mt-2 max-w-md text-sm text-zinc-300">{job.verdict.summary}</p>
+                  <p className="mt-1 text-xs text-zinc-500">
+                    Payout {job.verdict.recommendedPayoutBps / 100}% · Confidence{" "}
+                    {Math.round(job.verdict.confidence * 100)}%
+                  </p>
+                </div>
+              </div>
+              {explorerUrl && (
+                <a
+                  href={explorerUrl}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="inline-flex items-center gap-2 rounded-xl border border-indigo-500/30 bg-indigo-500/10 px-4 py-2.5 text-sm font-medium text-indigo-200 hover:bg-indigo-500/20"
+                >
+                  View on HashScan
+                  <ExternalLink className="h-4 w-4" />
+                </a>
+              )}
+            </div>
+
+            {verdictRaw?.checks && (
+              <div className="mt-8 grid gap-3 sm:grid-cols-3">
+                {verdictRaw.checks.map((check) => (
+                  <div
+                    key={check.key}
+                    className="rounded-xl border border-white/5 bg-black/20 p-4"
+                  >
+                    <div className="flex items-center justify-between gap-2">
+                      <span className="font-medium">{check.label}</span>
+                      <Badge tone={check.passed ? "success" : "warning"}>
+                        {check.score}
+                      </Badge>
+                    </div>
+                    <p className="mt-2 text-xs leading-relaxed text-zinc-400">
+                      {check.rationale}
+                    </p>
+                  </div>
+                ))}
+              </div>
+            )}
+          </Card>
+        )}
+
+        <div className="mt-6 grid gap-6 lg:grid-cols-2">
           <Card>
             <h2 className="mb-3 font-semibold">Task spec</h2>
-            <p className="text-sm text-zinc-300 whitespace-pre-wrap">{job.taskSpec}</p>
+            <p className="text-sm leading-relaxed text-zinc-300 whitespace-pre-wrap">{job.taskSpec}</p>
             <h2 className="mb-3 mt-6 font-semibold">Deliverable</h2>
-            <p className="text-sm text-zinc-300 whitespace-pre-wrap">
+            <p className="text-sm leading-relaxed text-zinc-300 whitespace-pre-wrap">
               {job.deliverableText ?? job.deliverableUrl ?? "—"}
             </p>
           </Card>
 
-          <Card glow={Boolean(job.verdict?.pass)}>
-            <h2 className="mb-4 font-semibold">Verdict</h2>
-            {job.verdict ? (
-              <>
-                <div className="flex items-center gap-4">
-                  <div className="text-5xl font-bold">{job.verdict.score}</div>
-                  <div>
-                    <Badge tone={job.verdict.pass ? "success" : "danger"}>
-                      {job.verdict.pass ? "PASS" : "FAIL"}
-                    </Badge>
-                    <div className="mt-2 text-sm text-zinc-400">
-                      Payout: {job.verdict.recommendedPayoutBps / 100}% · Confidence{" "}
-                      {Math.round(job.verdict.confidence * 100)}%
-                    </div>
-                  </div>
-                </div>
-                <p className="mt-4 text-sm text-zinc-300">{job.verdict.summary}</p>
-                {verdictRaw?.checks && (
-                  <div className="mt-6 space-y-3">
-                    {verdictRaw.checks.map((check) => (
-                      <div
-                        key={check.key}
-                        className="rounded-xl border border-white/5 bg-black/20 p-3"
-                      >
-                        <div className="flex items-center justify-between">
-                          <span className="font-medium">{check.label}</span>
-                          <Badge tone={check.passed ? "success" : "warning"}>
-                            {check.score}
-                          </Badge>
-                        </div>
-                        <p className="mt-1 text-xs text-zinc-400">{check.rationale}</p>
-                      </div>
-                    ))}
-                  </div>
-                )}
-              </>
-            ) : (
-              <p className="text-zinc-400">Verification pending...</p>
+          <Card>
+            <h2 className="mb-4 font-semibold">Audit trail</h2>
+            <div className="grid gap-3">
+              <HashBlock label="Task hash" value={job.taskSpecHash} />
+              <HashBlock label="Deliverable hash" value={job.deliverableHash} />
+              <HashBlock label="Verdict hash" value={job.verdictHash} />
+              <HashBlock label="HCS transaction" value={job.hcsTransactionId} />
+            </div>
+            {!job.verdict && (
+              <p className="mt-4 text-sm text-zinc-400">Verification pending…</p>
             )}
           </Card>
         </div>
-
-        <Card className="mt-6">
-          <h2 className="mb-4 font-semibold">Audit trail</h2>
-          <div className="grid gap-3 md:grid-cols-2">
-            <HashBlock label="Task hash" value={job.taskSpecHash} />
-            <HashBlock label="Deliverable hash" value={job.deliverableHash} />
-            <HashBlock label="Verdict hash" value={job.verdictHash} />
-            <HashBlock label="HCS transaction" value={job.hcsTransactionId} />
-          </div>
-          {explorerUrl && (
-            <a
-              href={explorerUrl}
-              target="_blank"
-              rel="noreferrer"
-              className="mt-4 inline-block text-sm text-indigo-300 hover:underline"
-            >
-              View on HashScan →
-            </a>
-          )}
-        </Card>
 
         {job.verdict?.pass && (
           <Card className="mt-6">
             <h2 className="mb-2 font-semibold">Payout</h2>
             {job.payoutTransactionId ? (
               <div className="text-sm text-zinc-300">
-                <div>Status: {job.payoutStatus}</div>
-                <div className="mt-1 font-mono text-xs">{job.payoutTransactionId}</div>
-                <div className="mt-1">Amount: {job.payoutAmountHbar} HBAR</div>
+                <Badge tone="success">Sent</Badge>
+                <div className="mt-2 font-mono text-xs">{job.payoutTransactionId}</div>
+                <div className="mt-1">{job.payoutAmountHbar} HBAR on Hedera testnet</div>
               </div>
             ) : (
               <PayoutButton jobId={job.id} />

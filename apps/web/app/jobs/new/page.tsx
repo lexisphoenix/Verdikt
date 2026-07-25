@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { Shell, Card, Button } from "@/components/ui";
+import { Loader2 } from "lucide-react";
 import {
   DEFAULT_RUBRIC,
   DEMO_DELIVERABLE,
@@ -69,8 +70,24 @@ export default function NewJobPage() {
   return (
     <Shell>
       <div className="mx-auto max-w-3xl px-6 py-10">
-        <h1 className="text-3xl font-bold">New verification job</h1>
-        <p className="mt-1 text-zinc-400">Submit task spec, rubric, and deliverable</p>
+        <h1 className="text-3xl font-bold">New verification</h1>
+        <p className="mt-1 text-zinc-400">
+          Task spec, rubric, and deliverable — demo example is pre-filled
+        </p>
+
+        {loading && (
+          <Card className="mt-6 border-indigo-500/20 bg-indigo-500/5">
+            <div className="flex items-center gap-3 text-sm text-indigo-200">
+              <Loader2 className="h-5 w-5 animate-spin" />
+              <div>
+                <div className="font-medium">Judging with 0G…</div>
+                <div className="mt-0.5 text-xs text-zinc-400">
+                  Usually 5–10 seconds. You&apos;ll land on the verdict page when done.
+                </div>
+              </div>
+            </div>
+          </Card>
+        )}
 
         <Card className="mt-8">
           <form onSubmit={submit} className="space-y-5">
@@ -78,6 +95,7 @@ export default function NewJobPage() {
               <input
                 className="input"
                 required
+                disabled={loading}
                 value={form.title}
                 onChange={(e) => setForm({ ...form, title: e.target.value })}
               />
@@ -87,6 +105,7 @@ export default function NewJobPage() {
                 <select
                   className="input"
                   required
+                  disabled={loading}
                   value={form.clientAgentId}
                   onChange={(e) => setForm({ ...form, clientAgentId: e.target.value })}
                 >
@@ -100,6 +119,7 @@ export default function NewJobPage() {
                 <select
                   className="input"
                   required
+                  disabled={loading}
                   value={form.providerAgentId}
                   onChange={(e) => setForm({ ...form, providerAgentId: e.target.value })}
                 >
@@ -114,6 +134,7 @@ export default function NewJobPage() {
               <textarea
                 className="input min-h-24"
                 required
+                disabled={loading}
                 value={form.taskSpec}
                 onChange={(e) => setForm({ ...form, taskSpec: e.target.value })}
               />
@@ -122,6 +143,7 @@ export default function NewJobPage() {
               <textarea
                 className="input min-h-32"
                 required
+                disabled={loading}
                 value={form.deliverableText}
                 onChange={(e) => setForm({ ...form, deliverableText: e.target.value })}
               />
@@ -130,6 +152,7 @@ export default function NewJobPage() {
               <textarea
                 className="input min-h-40 font-mono text-xs"
                 required
+                disabled={loading}
                 value={form.rubricJson}
                 onChange={(e) => setForm({ ...form, rubricJson: e.target.value })}
               />
@@ -143,9 +166,16 @@ export default function NewJobPage() {
               <button
                 type="submit"
                 disabled={loading}
-                className="flex-1 rounded-xl bg-gradient-to-r from-indigo-500 to-emerald-400 py-3 font-semibold text-black disabled:opacity-50"
+                className="flex flex-1 items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-indigo-500 to-emerald-400 py-3 font-semibold text-black disabled:opacity-50"
               >
-                {loading ? "Verifying..." : "Submit & verify"}
+                {loading ? (
+                  <>
+                    <Loader2 className="h-4 w-4 animate-spin" />
+                    Judging…
+                  </>
+                ) : (
+                  "Submit & verify"
+                )}
               </button>
               <Button href="/dashboard" variant="secondary">Cancel</Button>
             </div>
@@ -160,6 +190,9 @@ export default function NewJobPage() {
           background: rgba(0, 0, 0, 0.3);
           padding: 0.625rem 0.875rem;
           font-size: 0.875rem;
+        }
+        .input:disabled {
+          opacity: 0.6;
         }
       `}</style>
     </Shell>

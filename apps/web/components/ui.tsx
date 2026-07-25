@@ -1,31 +1,70 @@
 import clsx from "clsx";
 import type { ReactNode } from "react";
+import { LogoWordmark } from "./logo";
+import { MobileNav } from "./mobile-nav";
+
+const NAV = [
+  { href: "/dashboard", label: "Dashboard" },
+  { href: "/jobs/new", label: "New job" },
+  { href: "/agents", label: "Agents" },
+  { href: "/identity", label: "Identity" },
+];
 
 export function Shell({ children }: { children: ReactNode }) {
   return (
-    <div className="relative min-h-screen overflow-hidden bg-[#050508] text-zinc-100">
+    <div className="relative flex min-h-screen flex-col overflow-hidden bg-[#050508] text-zinc-100">
       <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_top,_rgba(99,102,241,0.18),transparent_50%),radial-gradient(ellipse_at_bottom_right,_rgba(16,185,129,0.12),transparent_40%)]" />
       <div className="pointer-events-none absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGRlZnM+PHBhdHRlcm4gaWQ9ImdyaWQiIHdpZHRoPSI2MCIgaGVpZ2h0PSI2MCIgcGF0dGVyblVuaXRzPSJ1c2VyU3BhY2VPblVzZSI+PHBhdGggZD0iTSAxMCAwIEwgMCAwIDAgMTAiIGZpbGw9Im5vbmUiIHN0cm9rZT0icmdiYSgyNTUsMjU1LDI1NSwwLjAzKSIgc3Ryb2tlLXdpZHRoPSIxIi8+PC9wYXR0ZXJuPjwvZGVmcz48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSJ1cmwoI2dyaWQpIi8+PC9zdmc+')] opacity-40" />
-      <header className="relative z-10 border-b border-white/10 bg-black/20 backdrop-blur-xl">
-        <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-4">
-          <a href="/" className="flex items-center gap-3">
-            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-indigo-500 to-emerald-400 font-bold text-black">
-              V
-            </div>
-            <div>
-              <div className="text-lg font-semibold tracking-tight">Verdikt</div>
-              <div className="text-xs text-zinc-400">Agentic Verification</div>
-            </div>
+
+      <header className="relative z-20 border-b border-white/10 bg-black/20 backdrop-blur-xl">
+        <div className="relative mx-auto flex max-w-7xl items-center justify-between px-6 py-4">
+          <a href="/" className="hover:opacity-90">
+            <LogoWordmark />
           </a>
           <nav className="hidden items-center gap-6 text-sm text-zinc-300 md:flex">
-            <a href="/identity" className="hover:text-white">Identity</a>
-          <a href="/dashboard" className="hover:text-white">Dashboard</a>
-            <a href="/agents" className="hover:text-white">Agents</a>
-            <a href="/jobs/new" className="hover:text-white">New Job</a>
+            {NAV.map((item) => (
+              <a key={item.href} href={item.href} className="hover:text-white">
+                {item.label}
+              </a>
+            ))}
+            <a
+              href="/jobs/new"
+              className="rounded-lg bg-white/10 px-3 py-1.5 font-medium text-white hover:bg-white/15"
+            >
+              Run demo
+            </a>
           </nav>
+          <MobileNav />
         </div>
       </header>
-      <main className="relative z-10">{children}</main>
+
+      <main className="relative z-10 flex-1">{children}</main>
+
+      <footer className="relative z-10 border-t border-white/10 bg-black/20">
+        <div className="mx-auto flex max-w-7xl flex-wrap items-center justify-between gap-4 px-6 py-6 text-sm text-zinc-500">
+          <div>
+            <span className="text-zinc-400">Verdikt</span>
+            <span className="mx-2">·</span>
+            <span>Alejandro Nieto</span>
+          </div>
+          <div className="flex flex-wrap items-center gap-4">
+            <a href="https://verdikt-kohl.vercel.app" className="hover:text-zinc-300">
+              Live demo
+            </a>
+            <a
+              href="https://github.com/lexisphoenix/Verdikt"
+              className="hover:text-zinc-300"
+              target="_blank"
+              rel="noreferrer"
+            >
+              GitHub
+            </a>
+            <a href="/api/health" className="hover:text-zinc-300">
+              Health
+            </a>
+          </div>
+        </div>
+      </footer>
     </div>
   );
 }
@@ -132,4 +171,20 @@ export function Button({
     );
   }
   return <button className={cls}>{children}</button>;
+}
+
+export function SponsorPills() {
+  const sponsors = ["0G", "Hedera", "ENS"];
+  return (
+    <div className="flex flex-wrap items-center justify-center gap-2">
+      {sponsors.map((s) => (
+        <span
+          key={s}
+          className="rounded-full border border-white/10 bg-white/[0.03] px-3 py-1 text-xs font-medium text-zinc-400"
+        >
+          {s}
+        </span>
+      ))}
+    </div>
+  );
 }

@@ -13,9 +13,20 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Verdikt — Agentic Verification Service",
+  metadataBase: new URL("https://verdikt-kohl.vercel.app"),
+  title: "Verdikt — Verify agent deliverables",
   description:
-    "TEE-backed verification for agent-delivered work. Structured verdicts, Hedera audit trail, ENS identity.",
+    "Score agent work against a rubric with 0G. Anchor hashes on Hedera. ENS-linked verifier identity.",
+  icons: {
+    icon: "/icon.svg",
+  },
+  openGraph: {
+    title: "Verdikt",
+    description: "Verify agent deliverables. Verdict on 0G. Proof on Hedera.",
+    url: "https://verdikt-kohl.vercel.app",
+    siteName: "Verdikt",
+    type: "website",
+  },
 };
 
 export default function RootLayout({

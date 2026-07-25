@@ -36,7 +36,7 @@ export default async function IdentityPage({
         <Badge tone="info">ENS · .locker compatible</Badge>
         <h1 className="mt-4 text-3xl font-bold">{name}</h1>
         <p className="mt-2 text-zinc-400">
-          Agent identity resolution for Verdikt verifier
+          Verifier agent identity for this deployment
         </p>
 
         <Card className="mt-8" glow={resolved || linkedInLocker}>
@@ -66,15 +66,16 @@ export default async function IdentityPage({
 
           {linkedInLocker && (
             <p className="mt-4 text-sm text-zinc-400">
-              Tu address está en my.locker y registrada en Verdikt. Los indexadores ENS
-              (.locker) pueden tardar 30–60 min en reflejarla on-chain — válido para demo.
+              Address is saved in my.locker and registered in Verdikt. ENS
+              indexers for .locker can take 30–60 minutes to catch up — fine for
+              demo if you show my.locker directly.
             </p>
           )}
 
           <div className="mt-6 grid gap-3">
             <HashBlock
               label="Wallet address"
-              value={displayAddress ?? "Not set — link ETH in my.locker"}
+              value={displayAddress ?? "Not set — link ETH wallet in my.locker"}
             />
             <HashBlock
               label="agent-context"
@@ -87,32 +88,41 @@ export default async function IdentityPage({
 
         {!resolved && name.endsWith(".locker") && !linkedInLocker && (
           <Card className="mt-6 border-amber-500/20 bg-amber-500/5">
-            <h2 className="font-semibold text-amber-200">Cómo activar stora.locker</h2>
+            <h2 className="font-semibold text-amber-200">Link stora.locker</h2>
             <ol className="mt-3 list-decimal space-y-2 pl-5 text-sm text-zinc-300">
               <li>
-                Entra en{" "}
-                <a href="https://my.locker" className="text-indigo-300 underline" target="_blank" rel="noreferrer">
+                Open{" "}
+                <a
+                  href="https://my.locker"
+                  className="text-indigo-300 underline"
+                  target="_blank"
+                  rel="noreferrer"
+                >
                   my.locker
                 </a>{" "}
-                con tu cuenta
-              </li>
-              <li>Abre <strong>stora.locker</strong> → pestaña <strong>Addresses</strong></li>
-              <li>
-                Conecta <strong>MetaMask</strong> y guarda tu Ethereum address
+                and sign in
               </li>
               <li>
-                (Opcional) Text record <code>url</code> →{" "}
+                Go to <strong>stora.locker</strong> → <strong>Addresses</strong>
+              </li>
+              <li>
+                Connect <strong>MetaMask</strong> and save your Ethereum address
+              </li>
+              <li>
+                (Optional) Text record <code>url</code> →{" "}
                 <code className="text-emerald-300">https://verdikt-kohl.vercel.app</code>
               </li>
             </ol>
           </Card>
         )}
 
-        <div className="mt-6 flex gap-3">
+        <div className="mt-6 flex flex-wrap gap-3">
           <Button href={`/api/ens/resolve?name=${encodeURIComponent(name)}`} variant="secondary">
             JSON API
           </Button>
-          <Button href="/agents">Ver agents</Button>
+          <Button href="/agents" variant="secondary">
+            Agents
+          </Button>
           <Button href="/jobs/new">Run verification</Button>
         </div>
       </div>
